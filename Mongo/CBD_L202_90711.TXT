@@ -1,0 +1,171 @@
+//NMEC 90711
+
+#1
+db.rest.find()
+
+#2
+db.rest.find({}, { _id: 0, restaurant_id:1,nome:1,localidade:1,gastronomia:1 })
+
+#3
+db.rest.find({} , { _id: 0, restaurant_id:1,localidade:1,"address.zipcode":1})
+
+#4
+db.rest.aggregate(
+  [
+    {
+      $match: {
+        localidade: {
+          $eq : 'Bronx'
+        }
+      }
+    },
+    {
+      $count: "Bronx_total"
+    }
+  ]
+)
+
+#5
+db.rest.find({localidade : "Bronx"}).pretty().limit(5)
+
+#6
+db.rest.find({"grades.score":{$gt:85}})
+
+#7
+db.rest.find({
+$and : [{"grades.score" : {$gt : 80} },{"grades.score" : {$lt : 100}}]
+ })
+
+#8
+db.rest.find({"address.coord.0":{$lt : -95.7 }})
+
+#9
+db.rest.find({
+    $and : [ {gastronomia : {$ne : "American"}} ,{"grades.score" : {$gt : 70} }, {"address.coord.0":{$lt : -65 }}  ]
+
+})
+
+#10
+db.rest.find({nome: /^Wil/},{_id: 0, restaurant_id:1,nome : 1, localidade : 1, gastronomia : 1})
+
+#11
+db.rest.find({
+ $and : [{localidade : {$eq :"Bronx"}} ], 
+ $or : [{gastronomia : {$eq: "Chinese"}},{gastronomia : {$eq: "American"}}] }
+,{_id : 0 , nome : 1, localidade : 1, gastronomia : 1}
+)
+
+#12
+db.rest.find(
+  {$or : [{localidade : {$in : ["Staten Island","Queens","Bronx","Brooklyn"] }}] },
+  {_id:0 , restaurant_id:1, nome: 1, localidade : 1, gastronomia : 1}
+)
+
+#13
+db.rest.find(
+{"grades.score":{ $not : { $gt : 3} }},
+{_id: 0 , nome : 1, localidade : 1 , "grades.score" : 1 ,gastronomia : 1}
+)
+
+#14
+db.rest.find({
+$and : [
+{"grades.grade" : {$eq : "A"}}, {"grades.score": {$eq : 10}}, {"grades.date": {$eq : ISODate("2014-08-11T00:00:00Z")}}
+]
+},
+{_id : 0 ,nome : 1, grades : 1}
+).pretty()
+
+#15
+db.rest.find(
+{"grades.grade.1" : {$not:{ $eq : "A"}}},
+{_id:0 , restaurant_id:1 ,nome:1, "grades.score":1 }
+)
+
+#16
+db.rest.find(
+   {$and:[{"address.coord.1": {$gt : 42}},{"address.coord.1": {$lt : 52}}]},
+   {_id:0, restaurant_id : 1, nome : 1, address : 1 }
+
+)
+
+#17
+db.rest.find({},{_id:0,nome:1}).sort({nome:1})
+
+#18
+ db.rest.find({},
+{_id:0,nome : 1, gastronomia : 1, localidade : 1}).sort({gastronomia:1},{localidade : -1})
+
+#19
+db.rest.find(
+{ $and : [{gastronomia : {$not :  {$eq : "American" }}}, {localidade : {$eq : "Brooklyn"}}, {"grades.grade": {$eq : "A"}}]},
+{_id : 0, nome : 1, localidade : 1 , "grades.grade" : 1, gastronomia : 1 },
+).sort({gastronomia : -1}).pretty()
+
+#20
+db.rest.aggregate(
+[{
+  $group : 
+     {
+     _id : "$localidade",
+     total: { $sum : 1}
+     }
+}]
+)
+
+#21 
+db.rest.aggregate([
+{$project : {_id : 0 , nome : 1 ,media : {$avg :"$grades.score"} } },
+{$match : { media :{ $gt : 30} } }
+])
+
+#22
+db.rest.aggregate([
+{$project : {_id : 0 ,gastronomia :"$gastronomia" , coord :{ $arrayElemAt:["$address.coord",0] }, total : { $sum : "$grades.score" } } },
+{$match: { gastronomia: "American" , "coord" : {$lt : -65 }, total : {$gt : 70} } }
+])
+
+#23
+db.rest.aggregate(
+[{
+   $group : {
+       _id : "$gastronomia",
+       total : { $sum : 1 }
+   }
+},
+{
+  $sort : {total : -1}
+}
+]
+)
+
+#24
+db.rest.aggregate(
+[{ $match: { "address.rua": "Flatbush Avenue" } },
+{
+  $group : 
+     {
+     _id : "$address.rua",
+     total: { $sum : $gastronomia }
+     }
+}]
+)
+
+#25
+db.rest.aggregate(
+[{
+  $group : 
+     {
+     _id : "$address.rua",
+     total: { $sum : 1}
+     }
+},
+{
+  $sort : {total : -1}
+}
+]
+)
+
+
+
+

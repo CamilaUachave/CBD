@@ -1,0 +1,53 @@
+hi
+EXISTS mykey
+APPEND mykey "Hello"
+GET mykey
+set foo ba
+get foo
+cat data.txt | redis-cli --pipe
+DBSIZE
+Set nome Camila
+get nome
+Del nome
+Set i 1 
+incr i
+RPUSH family Camila
+RPUSH family Gabriel
+RPUSH family Rosana
+RPUSH family Eugenio
+LRANGE family 0 -1
+LLEN family
+LPOP family
+RPOP family
+SADD family "Camila"
+SADD family Camila
+SADD amigos Jean
+SADD amigos Marlene
+SADD amigos Carol
+SMEMBERS amigos
+SADD amigos Ionara
+SMEMBERS amigos
+SADD outrosAmigos Yeelen
+SADD outrosAmigos Michell
+SUNION amigos outrosAmigos
+SCARD amigos
+HSET goals viajar
+HSET goals "viajar"
+HSET goals:2019 "viajar"
+HSET 2019 goals "viajar"
+HSET 2019  money 200
+HSET 2019 city "Barcelona"
+HEXISTS 2019 alone
+HEXISTS 2019 money
+HKEYS 2019
+HVALS 2019
+HDEL 2019 money
+HLEN 2019
+ZADD animals "dog"
+ZADD animais selvagens "gato"
+ZADD animais 1 "gato"
+ZADD animais 2 "cao"
+ZADD animais 3 "leao"
+ZADD animais 0 -1 WITHSCORES
+ZA animais 0 -1 
+ZRANGE animais 0 -1 WITHSCORES

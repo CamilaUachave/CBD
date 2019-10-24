@@ -1,0 +1,194 @@
+Redis é o que é chamado de armazenamento de valor-chave, geralmente chamado de banco de dados NoSQL.
+
+A essência de um armazenamento de valores-chave é a capacidade de armazenar alguns dados, chamados de valor, dentro de uma chave. Esses dados podem ser recuperados posteriormente apenas se soubermos a chave exata usada para armazená-los.
+
+SET --> armazenamos um valor em uma chave
+
+exemplo: SET nome "camila"
+
+GET --> Retorna o valor guardado em uma chave
+
+exemplo : GET nome 
+outuput : "camila"
+
+DEL --> para excluir uma determina chave e valor associado
+
+exemplo: DEL nome 
+
+SETNX -->define uma chave somente se ela ainda nao existe 
+
+INCR --> incrementa automaticamente um numero armazenado em uma determinada chave
+
+Os Redis podem ser informados de que uma chave só deve existir por um determinado período de tempo. Isso é realizado com os comandos EXPIRE e TTL.
+
+exemplo: 
+SET resource:lock "Redis Demo"
+EXPIRE resource:lock 120
+
+A chave sera excluida em 120 segundos
+
+TTL --> Serve para verificar o tempo que falta para a chave expirar ou se ela ja expirou
+
+
+
+**********************************************************************
+
+LISTAS 
+
+Uma lista é uma série de valores ordenados.
+
+RPUSH-->coloca o novo valor no final da lista.
+LPUSH-->coloca o novo valor no início da lista.
+LRANGE-->fornece um subconjunto da lista. 
+
+exemplo 1:
+RPUSH friends "Alice"
+RPUSH friends "Bob"
+LPUSH friends "Sam"
+
+Output:
+ 1) "Sam", 2) "Alice", 3) "Bob"
+
+exemplo 2:
+LRANGE friends 0 -1  
+-1 retorna todos ate ao fim
+0 primeiro elemento 
+
+output:
+ 1) "Sam", 2) "Alice", 3) "Bob"
+
+LLEN-->retorna o comprimento atual da lista.
+
+LLEN friens => 3
+
+O LPOP--> remove o primeiro elemento da lista e o retorna.
+LPOP friends => "Sam"
+
+O RPOP--> remove o último elemento da lista e o retorna.
+RPOP friends => "Bob"
+
+***********************************************************************
+SET
+
+Um conjunto é semelhante a uma lista, exceto que não possui uma ordem específica e cada elemento pode aparecer apenas uma vez.
+
+SADD adiciona o valor fornecido ao conjunto.
+
+ex:  SADD superpowers "flight"
+SADD superpowers "reflexes"
+
+SREM remove o valor fornecido do conjunto.
+
+ex: SREM superpowers "reflexes"
+
+SISMEMBER--> testa se o valor fornecido está no conjunto. Retorna 1 se o valor estiver lá e 0 se não estiver.
+
+SMEMBERS retorna uma lista de todos os membros deste conjunto.
+
+SUNION combina dois ou mais conjuntos e retorna a lista de todos os elementos.
+
+ex:
+SADD birdpowers "pecking"
+SADD birdpowers "flight"
+SUNION superpowers birdpowers => 1) "pecking", 2) "flight"
+
+SCARD--> obtém o número de elementos em um conjunto
+
+
+
+**********************************************************************
+HASHES
+
+Hashes-->são mapas entre campos de string e valores de string
+
+ex:
+    HSET user:1000 name "John Smith"
+    HSET user:1000 email "john.smith@example.com"
+    HSET user:1000 password "s3cret"
+
+HGETALL--> obtém todos os campos e valores
+
+Você também pode definir vários campos ao mesmo tempo
+
+ HMSET user:1001 name "Mary Jones" password "hidden" email "mjones@example.com"
+
+Se você precisar apenas de um único valor de campo, também é possível
+
+HGET user:1001 name => "Mary Jones"
+
+
+HEXISTS--> determina se um determinado campo existe
+
+HKEYS--> obtém todos os campos em um determinado hash
+
+HVALS--> obtém todos os valores em um determinado hash
+
+HDEL--> Remove um determinado campo / campos de um hash
+
+HLEN--> retorna o número de campos em um determinado hash
+
+************************************************************************
+Sorted Sets
+
+ZADD--> Insere um elemento / vários elementos em um conjunto classificado.
+
+ZREM--> Remove um elemento / vários elementos do conjunto classificado
+
+ZSCORE--> Obtém a pontuação associada a um determinado elemento
+
+ZINCRBY--> Incrementa a pontuação de um determinado elemento
+
+ZRANGE-->Retorna todos os elementos dentro de um determinado intervalo com base em
+posições
+
+ZRANGEBYSCORE min max--> Retorna os elementos dentro de um determinado intervalo com base nas pontuações
+
+ZCARD--> Obtém o número geral de todos os elementos
+
+ZCOUNT min de chave mínima--> Conta elementos dentro de um determinado intervalo com base na pontuação
+
+*********************************************************************
+Operações de campo geoespaciais
+
+GEOADD key longitude latitude member--> Adiciona os itens geoespaciais especificados (latitude, longitude,nome) para a chave especificada.
+
+GEODIST key member1 member2-->Retorne a distância entre dois membros.
+
+GEOHASH-->Retornar string Geohash (compatível com geohash.org)
+
+GEOPOS--> Retorne as posições (longitude, latitude) de todas as opções especificadas
+membros.
+
+GEORADIUS--> Retorne os membros que estão dentro do raio da
+localização.
+
+
+************************************************************************
+Operações sobre estruturas (ranges, unions, intersections, subtractions)
+
+SDIFF--> Retorna os membros do conjunto resultantes da diferença entre o primeiro conjunto e todos os conjuntos sucessivos.
+
+EXEMPLO:
+key1 = {a,b,c,d}
+key2 = {c}
+key3 = {a,c,e}
+SDIFF key1 key2 key3 = {b,d}
+
+SINTER-->Retorna os membros do conjunto resultantes da interseção de todos os conjuntos fornecidos.
+
+EXEMPLO:
+key1 = {a,b,c,d}
+key2 = {c}
+key3 = {a,c,e}
+SINTER key1 key2 key3 = {c}
+
+SUNION--> Retorna os membros do conjunto resultantes da união de todos os conjuntos fornecidos.
+
+EXEMPLO:
+key1 = {a,b,c,d}
+key2 = {c}
+key3 = {a,c,e}
+SUNION key1 key2 key3 = {a,b,c,d,e}
+
+
+

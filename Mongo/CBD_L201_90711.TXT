@@ -1,0 +1,192 @@
+1.use mydb-->cria uma nova database, caso exista retorna a database.
+switched to db mydb
+
+2.db --> verificar que bd estamos a usar
+
+3.show dbs--> lista de databases
+
+4.db.movie.insert({"name":"Joker"})
+
+WriteResult({ "nInserted" : 1 })
+
+
+5.db.dropDatabase()--> apagar uma base de dados
+{ "dropped" : "mydb", "ok" : 1 }
+
+
+6.db.createCollection("mycollection")-->criar colecao
+{ "ok" : 1 }
+
+7.db.createCollection("newCollection",{capped:true,autoIndexId:true, size: 6142800, max:10000})
+{
+	"note" : "the autoIndexId option is deprecated and will be removed in a future release",
+	"ok" : 1
+}
+
+8.db.COLLECTION_NAME.drop() --> apagar colecao
+
+db.COLLECTION_NAME.drop()
+true
+
+9.db.COLLECTION_NAME.insert(document)--> inserir dados para a colecao
+
+10.db.testar.insert ({
+title : 'teste 1',
+category : 'CBD',
+likes : 100,
+tags : ['first','try'],
+user : {
+	FirstName : 'Camila',
+	LastName : 'Uachave'
+}
+
+})
+
+
+db.testar.insert ({
+title : 'teste 2',
+category : 'CBD',
+likes : 50,
+tags : ['first','try'],
+user : {
+FirstName : 'Gabriel',
+LastName : 'Uachave'
+}
+
+})
+
+
+db.testar.insert ({
+title : 'teste 3',
+category : 'CBD',
+likes : 200,
+tags : ['first','try'],
+user : {
+FirstName : 'Rosana',
+LastName : 'Francisco'
+}
+
+})
+
+WriteResult({ "nInserted" : 1 })
+
+11. db.COLLECTION_NAME.find()-->imprime todos documemtos de forma nao estruturada
+
+12.db.mycol.find().pretty()-->imprime todos documemtos de forma formatada
+ex: db.testar.find({ user: { $elemMatch { FirstName : "Rosana }} })
+
+
+ex:
+db.testar.find({title : 'teste 3'}).pretty()
+
+{
+	"_id" : ObjectId("5da23eee69c540c3a40beec3"),
+	"title" : "teste 3",
+	"category" : "CBD",
+	"likes" : 200,
+	"tags" : [
+		"first",
+		"try"
+	],
+	"user" : {
+		"FirstName" : "Rosana",
+		"LastName" : "Francisco"
+	}
+}
+
+13. sort 
+1 -> ascendente
+-1 -> descendente
+
+db.testar.find().sort({likes : -1}).pretty()
+
+{
+	"_id" : ObjectId("5da23eee69c540c3a40beec3"),
+	"title" : "teste 3",
+	"category" : "CBD",
+	"likes" : 200,
+	"tags" : [
+		"first",
+		"try"
+	],
+	"user" : {
+		"FirstName" : "Rosana",
+		"LastName" : "Francisco"
+	}
+}
+{
+	"_id" : ObjectId("5da23eda69c540c3a40beec2"),
+	"title" : "teste 1",
+	"category" : "CBD",
+	"likes" : 100,
+	"tags" : [
+		"first",
+		"try"
+	],
+	"user" : {
+		"FirstName" : "Camila",
+		"LastName" : "Uachave"
+	}
+}
+{
+	"_id" : ObjectId("5da23ec969c540c3a40beec1"),
+	"title" : "teste 2",
+	"category" : "CBD",
+	"likes" : 50,
+	"tags" : [
+		"first",
+		"try"
+	],
+	"user" : {
+		"FirstName" : "Gabriel",
+		"LastName" : "Uachave"
+	}
+}
+
+db.testar.find().forEach(function(doc){ print('Titles:' + doc.title)})
+
+
+14. update()
+
+db.testar.update ({title: 'testar 3'},
+... { title : 'mom and dad'
+... },
+... { 
+...   upsert: true
+... }
+... )
+
+
+WriteResult({
+	"nMatched" : 0,
+	"nUpserted" : 1,
+	"nModified" : 0,
+	"_id" : ObjectId("5da24683f39fd015377ddd4f")
+})
+
+update tem os metodos :
+$set
+$rename
+$inc
+
+15.remove ()
+
+db.testar.remove({title: 'teste 1'})
+WriteResult({ "nRemoved" : 1 })
+
+16.Index 
+
+db.testar.createIndex({ title : 'text' })
+
+{
+	"createdCollectionAutomatically" : false,
+	"numIndexesBefore" : 1,
+	"numIndexesAfter" : 2,
+	"ok" : 1
+}
+
+db.testar.find({
+... $text: 
+...  $search : "\"teste 2\""}
+... })
+
