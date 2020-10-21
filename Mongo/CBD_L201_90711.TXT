@@ -185,7 +185,7 @@ db.testar.createIndex({ title : 'text' })
 	"ok" : 1
 }
 
-db.testar.find({
+db.testar.find({  FJSHJSGHDGSHJJKDJK
 ... $text: 
 ...  $search : "\"teste 2\""}
 ... })
